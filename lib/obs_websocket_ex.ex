@@ -53,6 +53,11 @@ defmodule ObsWebSocket do
         handle_reply(1, %{rpcVersion: data["rpcVersion"]}, state)
       end
 
+      @impl true
+      def handle_info({:request, type, data}, state) do
+        handle_request(type, data, state)
+      end
+
       defp handle_request(request_type, request_data, state) do
         data =
           %{

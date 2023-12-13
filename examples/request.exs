@@ -14,11 +14,6 @@ defmodule Examples.ObsWebSocket do
     IO.puts("Received Message - Type: #{inspect(type)} -- Message: #{inspect(message)}")
     {:ok, state}
   end
-
-  @impl true
-  def handle_info({:request, type, data}, state) do
-    handle_request(type, data, state)
-  end
 end
 
 {:ok, conn} = Examples.ObsWebSocket.start_link("ws://localhost:4455", password: "password")
