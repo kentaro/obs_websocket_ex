@@ -1,4 +1,8 @@
 defmodule ObsWebSocket do
+  def request(client, type, data) do
+    send(client, {:request, type, data})
+  end
+
   defmacro __using__(opts) do
     quote location: :keep do
       use WebSockex, unquote(opts)
@@ -34,15 +38,30 @@ defmodule ObsWebSocket do
           |> then(fn s -> :crypto.hash(:sha256, s) end)
           |> Base.encode64()
 
-        handle_reply(1, %{
-          rpcVersion: data["rpcVersion"],
-          authentication: authentication_string
-        }, state)
+        handle_reply(
+          1,
+          %{
+            rpcVersion: data["rpcVersion"],
+            authentication: authentication_string
+          },
+          state
+        )
       end
 
       defp handle_hello(%{} = data, state) do
         Logger.debug("Hello (authentication not required): #{inspect(data)}")
         handle_reply(1, %{rpcVersion: data["rpcVersion"]}, state)
+      end
+
+      defp handle_request(request_type, request_data, state) do
+        data =
+          %{
+            "requestType" => request_type,
+            "requestId" => UUID.uuid1(),
+            "requestData" => request_data
+          }
+
+        handle_reply(6, data, state)
       end
 
       defp handle_reply(op, data, state) do

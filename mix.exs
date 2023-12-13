@@ -20,7 +20,8 @@ defmodule ObsWebsocketEx.MixProject do
   defp deps do
     [
       {:websockex, "~> 0.4.3"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:elixir_uuid, "~> 1.2.1"}
     ]
   end
 end
